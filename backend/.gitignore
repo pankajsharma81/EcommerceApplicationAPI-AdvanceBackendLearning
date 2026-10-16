@@ -37,4 +37,5 @@ tmp/
 temp/
 
 # Prisma
+/generated/prisma
 # Keep schema, migrations, and config tracked
