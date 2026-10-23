@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { FRONTEND_URL } from "./config/env.config.js";
+import { globalErrorHandler } from "./middlewares/error.middleware.js";
 
 const app = express();
 
@@ -19,5 +20,7 @@ app.get("/health-check", (_req, res) => {
     message: "server is healthy",
   });
 });
+
+app.use(globalErrorHandler);
 
 export default app;
