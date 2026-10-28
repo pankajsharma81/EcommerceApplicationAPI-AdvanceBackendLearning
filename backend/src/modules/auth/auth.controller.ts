@@ -1,0 +1,20 @@
+import { Request, Response } from "express";
+import { catchAsync } from "../../utils/catch-async.js";
+import { authService } from "./auth.container.js";
+import { setCookies } from "../../utils/auth.helper.js";
+import { sendResponse } from "../../utils/send-response.js";
+
+export const registerUserController = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await authService.registerUser(req.body);
+
+    setCookies(res, result.accessToken, result.refreshToken);
+
+    sendResponse({
+      res,
+      statusCode: 201,
+      message: "User Created Successfully",
+      data: result,
+    });
+  },
+);

@@ -3,6 +3,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { FRONTEND_URL } from "./config/env.config.js";
 import { globalErrorHandler } from "./middlewares/error.middleware.js";
+import authRoutes from "./modules/auth/auth.route.js";
+
 
 const app = express();
 
@@ -20,6 +22,8 @@ app.get("/health-check", (_req, res) => {
     message: "server is healthy",
   });
 });
+
+app.use("/api/v1/auth", authRoutes)
 
 app.use(globalErrorHandler);
 
