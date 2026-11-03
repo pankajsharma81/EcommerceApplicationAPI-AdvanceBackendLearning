@@ -1,12 +1,16 @@
 import { AppError } from "../../utils/app-error.js";
-import { hashPassword, hashToken } from "../../utils/auth.helper.js";
+import {
+  comparePassword,
+  hashPassword,
+  hashToken,
+} from "../../utils/auth.helper.js";
 import {
   generateAccessToken,
   generateRefreshToken,
 } from "../../utils/jwt.helper.js";
 import type { IAuthRepository } from "./auth.interface.js";
 import { mapUserResponse } from "./auth.mapper.js";
-import type { registerUserDto } from "./auth.schema.js";
+import type { loginUserDto, registerUserDto } from "./auth.schema.js";
 
 export class AuthService {
   constructor(private readonly authRepository: IAuthRepository) {}
@@ -14,7 +18,7 @@ export class AuthService {
   async registerUser(body: registerUserDto) {
     const { firstName, lastName, email, password, phoneNumber, role } = body;
 
-    const existingUser = await this.authRepository.getUserByEmail(email);
+    const existingUser = await this.authRepository.findUserByEmail(email);
 
     if (existingUser) {
       throw new AppError("Email is already registered", 409);
@@ -44,6 +48,39 @@ export class AuthService {
 
     return {
       user: mapUserResponse(newUser),
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  async loginUser(body: loginUserDto) {
+    const { email, password } = body;
+
+    const user = await this.authRepository.findUserByEmail(email);
+
+    if (!user) {
+      throw new AppError("Invalid email or password", 401);
+    }
+
+    const isPasswordValid = await comparePassword(password, user.passwordHash);
+
+    if (!isPasswordValid) {
+      throw new AppError("Invalid email or password", 401);
+    }
+
+    const accessToken = generateAccessToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
+
+    const hashedToken = hashToken(refreshToken);
+
+    await this.authRepository.createRefreshToken({
+      userId: user.id,
+      tokenHash: hashedToken,
+      expireAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
+    return {
+      user: mapUserResponse(user),
       accessToken,
       refreshToken,
     };

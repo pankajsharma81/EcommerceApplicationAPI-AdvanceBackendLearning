@@ -18,3 +18,18 @@ export const registerUserController = catchAsync(
     });
   },
 );
+
+export const loginUserController = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await authService.loginUser(req.body);
+
+    setCookies(res, result.accessToken, result.refreshToken);
+
+    sendResponse({
+      res,
+      statusCode: 201,
+      message: "User LoggedIn Successfully",
+      data: result,
+    });
+  },
+);

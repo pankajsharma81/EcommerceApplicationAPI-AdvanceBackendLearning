@@ -3,7 +3,7 @@ import { prisma } from "../../lib/prisma.js";
 import type { IAuthRepository } from "./auth.interface.js";
 
 export class AuthRepository implements IAuthRepository {
-  async getUserByEmail(email: string): Promise<User | null> {
+  async findUserByEmail(email: string): Promise<User | null> {
     const user = await prisma.user.findUnique({
       where: {
         email,

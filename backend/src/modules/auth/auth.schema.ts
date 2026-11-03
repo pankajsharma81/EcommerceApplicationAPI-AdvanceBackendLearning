@@ -9,4 +9,10 @@ export const registerUserSchema = z.object({
   phoneNumber: z.string().optional(),
 });
 
+export const loginUserSchema = z.object({
+  email: z.email("Email is required").trim(),
+  password: z.string().min(1, "Password is required")
+})
+
 export type registerUserDto = z.infer<typeof registerUserSchema>;
+export type loginUserDto = z.infer<typeof loginUserSchema>
