@@ -33,3 +33,16 @@ export const loginUserController = catchAsync(
     });
   },
 );
+
+export const getCurrentUserController = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await authService.getCurrentUser(req?.user.id as string);
+
+    sendResponse({
+      res,
+      statusCode: 200,
+      message: "User details fetched successfully",
+      data: result,
+    });
+  },
+);

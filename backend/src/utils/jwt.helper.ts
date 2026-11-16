@@ -6,8 +6,8 @@ import {
   JWT_REFRESH_SECRET,
 } from "../config/env.config.js";
 
-export const generateAccessToken = (userId: string): string => {
-  return jwt.sign({ userId }, JWT_ACCESS_SECRET!, {
+export const generateAccessToken = (userId: string, role: string): string => {
+  return jwt.sign({ userId, role }, JWT_ACCESS_SECRET!, {
     expiresIn: JWT_ACCESS_EXPIRES_IN as SignOptions["expiresIn"],
   });
 };

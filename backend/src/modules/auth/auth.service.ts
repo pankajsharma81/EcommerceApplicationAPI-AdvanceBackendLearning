@@ -35,7 +35,7 @@ export class AuthService {
       role,
     });
 
-    const accessToken = generateAccessToken(newUser.id);
+    const accessToken = generateAccessToken(newUser.id, newUser.role);
     const refreshToken = generateRefreshToken(newUser.id);
 
     const hashedToken = hashToken(refreshToken);
@@ -68,7 +68,7 @@ export class AuthService {
       throw new AppError("Invalid email or password", 401);
     }
 
-    const accessToken = generateAccessToken(user.id);
+    const accessToken = generateAccessToken(user.id, user.role);
     const refreshToken = generateRefreshToken(user.id);
 
     const hashedToken = hashToken(refreshToken);
@@ -84,5 +84,15 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async getCurrentUser(userId: string){
+    const user = await this.authRepository.findUserById(userId)
+
+    if(!user){
+      throw new AppError("User not found", 404);
+    }
+
+    return mapUserResponse(user)
   }
 }

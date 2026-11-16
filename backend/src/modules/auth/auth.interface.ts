@@ -17,5 +17,5 @@ export interface IAuthRepository {
     expireAt: Date;
   }): Promise<RefreshToken>;
 
-
+  findUserById(id: string): Promise<User | null>;
 }
