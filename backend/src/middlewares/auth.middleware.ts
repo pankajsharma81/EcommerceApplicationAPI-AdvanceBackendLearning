@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../utils/app-error.js";
 import { verifyAccessToken } from "../utils/jwt.helper.js";
-import { IJwtPayload } from "../types/index.js";
+import jwt from "jsonwebtoken";
 
 export const authenticate = async (req: Request, _res: Response, next: NextFunction) => {
     try {
@@ -24,6 +24,9 @@ export const authenticate = async (req: Request, _res: Response, next: NextFunct
         }
         next()
     } catch (error) {
+        if(error instanceof jwt.JsonWebTokenError){
+            return next(new AppError("Invalid or expired access token", 401))
+        }
         next(error)
     }
 }

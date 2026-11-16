@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { catchAsync } from "../../utils/catch-async.js";
 import { authService } from "./auth.container.js";
-import { setCookies } from "../../utils/auth.helper.js";
+import { clearCookies, setCookies } from "../../utils/auth.helper.js";
 import { sendResponse } from "../../utils/send-response.js";
 
 export const registerUserController = catchAsync(
@@ -42,6 +42,36 @@ export const getCurrentUserController = catchAsync(
       res,
       statusCode: 200,
       message: "User details fetched successfully",
+      data: result,
+    });
+  },
+);
+
+export const logoutController = catchAsync(
+  async (req: Request, res: Response) => {
+    const refreshToken = req.cookies?.refreshToken || req.body.refreshToken;
+    const result = await authService.logout(refreshToken);
+    clearCookies(res);
+
+    sendResponse({
+      res,
+      statusCode: 200,
+      message: "User logout successfully",
+      data: result,
+    });
+  },
+);
+
+export const logoutAllController = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await authService.logoutAll(req?.user.id as string);
+
+    clearCookies(res);
+
+    sendResponse({
+      res,
+      statusCode: 200,
+      message: "All User logout successfully",
       data: result,
     });
   },

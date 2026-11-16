@@ -18,4 +18,11 @@ export interface IAuthRepository {
   }): Promise<RefreshToken>;
 
   findUserById(id: string): Promise<User | null>;
+
+  findRefreshToken(tokenHash: string): Promise<RefreshToken | null>;
+  deleteRefreshTokenById(id: string): Promise<RefreshToken>;
+  
+  deleteAllRefreshTokenByUserId(userId: string): Promise<{ count: number }>;
+  
+  // deleteRefreshTokenByToken(tokenHash: string): Promise<RefreshToken>;
 }

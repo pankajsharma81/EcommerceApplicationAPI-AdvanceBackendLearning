@@ -86,13 +86,40 @@ export class AuthService {
     };
   }
 
-  async getCurrentUser(userId: string){
-    const user = await this.authRepository.findUserById(userId)
+  async getCurrentUser(userId: string) {
+    const user = await this.authRepository.findUserById(userId);
 
-    if(!user){
+    if (!user) {
       throw new AppError("User not found", 404);
     }
 
-    return mapUserResponse(user)
+    return mapUserResponse(user);
+  }
+
+  async logout(refreshToken: string) {
+    if (!refreshToken) {
+      throw new AppError("Refresh token required", 401);
+    }
+
+    const refreshTokenHashed = hashToken(refreshToken);
+
+    const existingToken =
+      await this.authRepository.findRefreshToken(refreshTokenHashed);
+
+    if (!existingToken) {
+      throw new AppError("Invalid refresh token", 401);
+    }
+
+    await this.authRepository.deleteRefreshTokenById(existingToken.id);
+    return true;
+  }
+
+  async logoutAll(userId: string) {
+    if (!userId) {
+      throw new AppError("user not authenticated", 401);
+    }
+
+    await this.authRepository.deleteAllRefreshTokenByUserId(userId);
+    return true;
   }
 }
