@@ -23,6 +23,4 @@ export interface IAuthRepository {
   deleteRefreshTokenById(id: string): Promise<RefreshToken>;
   
   deleteAllRefreshTokenByUserId(userId: string): Promise<{ count: number }>;
-  
-  // deleteRefreshTokenByToken(tokenHash: string): Promise<RefreshToken>;
 }

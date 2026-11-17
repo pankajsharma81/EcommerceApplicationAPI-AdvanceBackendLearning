@@ -76,3 +76,19 @@ export const logoutAllController = catchAsync(
     });
   },
 );
+
+export const refreshTokenController = catchAsync(
+  async (req: Request, res: Response) => {
+    const refreshToken = req.cookies?.refreshToken || req.body.refreshToken;
+    const result = await authService.refreshToken({ refreshToken });
+
+    setCookies(res, result.accessToken, result.refreshToken);
+
+    sendResponse({
+      res,
+      statusCode: 200,
+      message: "Access token refreshed successfully",
+      data: result,
+    });
+  },
+);

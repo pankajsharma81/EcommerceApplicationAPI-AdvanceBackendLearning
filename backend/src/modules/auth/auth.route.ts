@@ -1,7 +1,7 @@
 import express from "express";
-import { getCurrentUserController, loginUserController, logoutAllController, logoutController, registerUserController } from "./auth.controller.js";
+import { getCurrentUserController, loginUserController, logoutAllController, logoutController, refreshTokenController, registerUserController } from "./auth.controller.js";
 import { validate } from "../../middlewares/validate.middleware.js";
-import { loginUserSchema, registerUserSchema } from "./auth.schema.js";
+import { loginUserSchema, refreshTokenSchema, registerUserSchema } from "./auth.schema.js";
 import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const router = express.Router();
@@ -13,5 +13,7 @@ router.get("/me", authenticate, getCurrentUserController);
 
 router.post("/logout", authenticate, logoutController);
 router.post("/logout-all", authenticate, logoutAllController);
+
+router.post("/refresh-token",validate(refreshTokenSchema), refreshTokenController)
 
 export default router;

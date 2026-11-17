@@ -7,10 +7,15 @@ import {
 import {
   generateAccessToken,
   generateRefreshToken,
+  verifyRefreshToken,
 } from "../../utils/jwt.helper.js";
 import type { IAuthRepository } from "./auth.interface.js";
 import { mapUserResponse } from "./auth.mapper.js";
-import type { loginUserDto, registerUserDto } from "./auth.schema.js";
+import type {
+  loginUserDto,
+  refreshTokenDto,
+  registerUserDto,
+} from "./auth.schema.js";
 
 export class AuthService {
   constructor(private readonly authRepository: IAuthRepository) {}
@@ -121,5 +126,64 @@ export class AuthService {
 
     await this.authRepository.deleteAllRefreshTokenByUserId(userId);
     return true;
+  }
+
+  async refreshToken(body: refreshTokenDto) {
+    const { refreshToken } = body;
+
+    let payload;
+
+    try {
+      payload = verifyRefreshToken(refreshToken);
+    } catch (error) {
+      throw new AppError("Invalid or expired refresh token", 401);
+    }
+
+    if (typeof payload === "string" || typeof payload.userId !== "string") {
+      throw new AppError("Invalid refresh token", 401);
+    }
+
+    const tokenHash = hashToken(refreshToken);
+
+    const storedToken = await this.authRepository.findRefreshToken(tokenHash);
+
+    if (!storedToken) {
+      throw new AppError("Invalid or expired refresh token", 401);
+    }
+
+    if (storedToken.expireAt < new Date()) {
+      await this.authRepository.deleteRefreshTokenById(storedToken.id);
+
+      throw new AppError("Refresh token has expired", 401);
+    }
+
+    if (storedToken.userId !== payload.userId) {
+      throw new AppError("Invalid refresh token", 401);
+    }
+
+    const user = await this.authRepository.findUserById(payload.userId);
+
+    if (!user) {
+      throw new AppError("User not found", 401);
+    }
+
+    const newAccessToken = generateAccessToken(user.id, user.role);
+    const newRefreshToken = generateRefreshToken(user.id);
+
+    // Rotate refresh token
+    await this.authRepository.deleteRefreshTokenById(storedToken.id);
+
+    const hashedToken = hashToken(newRefreshToken);
+
+    await this.authRepository.createRefreshToken({
+      tokenHash: hashedToken,
+      userId: payload.userId,
+      expireAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
+    return {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    };
   }
 }
