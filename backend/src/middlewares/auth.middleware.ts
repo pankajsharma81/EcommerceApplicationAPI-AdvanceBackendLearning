@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { AppError } from "../utils/app-error.js";
 import { verifyAccessToken } from "../utils/jwt.helper.js";
 import jwt from "jsonwebtoken";
+import { Role } from "../../generated/prisma/enums.js";
 
 export const authenticate = async (req: Request, _res: Response, next: NextFunction) => {
     try {
@@ -30,3 +31,20 @@ export const authenticate = async (req: Request, _res: Response, next: NextFunct
         next(error)
     }
 }
+
+// export const authorizeSeller = (req: Request, _res: Response, next: NextFunction) => {
+//     const user = req.user
+//     if(user.role !== "SELLER"){
+//         throw new AppError("You are not authorized", 401)
+//     }
+//     next()
+// }
+
+export const authorize = (...allowedRoles: Role[]) => {
+    return (req: Request, _res: Response, next: NextFunction) => {
+        if(!allowedRoles.includes(req.user.role as Role)){
+            return next(new AppError("you are not authorized", 403))
+        }
+        next();
+    };
+};
