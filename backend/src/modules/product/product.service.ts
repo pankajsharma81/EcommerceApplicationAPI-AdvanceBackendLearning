@@ -52,4 +52,19 @@ export class ProductService {
       product: mapProductResponse(newProduct),
     };
   }
+
+  async getProductByCategoryId(categoryId: string){
+
+    const existingCategory = await this.categoryRepository.findCategoryById(categoryId);
+
+    if(!existingCategory){
+      throw new AppError("Category not found", 404)
+    }
+
+    const products = await this.productRepository.findProductByCategoryId(categoryId);
+
+    return {
+      products: products.map(mapProductResponse)
+    }
+  }
 }

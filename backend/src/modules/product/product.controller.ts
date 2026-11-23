@@ -23,3 +23,16 @@ export const createProductController = catchAsync(
     });
   },
 );
+
+export const getProductsByCategoryIdController = catchAsync(
+  async(req: Request, res: Response) => {
+    const result = await productService.getProductByCategoryId(req.params.categoryId as string);
+
+    sendResponse({
+      res,
+      statusCode: 200,
+      message: "Products Fetched Successfully",
+      data: result
+    })
+  }
+)
