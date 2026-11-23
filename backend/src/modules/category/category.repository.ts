@@ -26,4 +26,38 @@ export class CategoryRepository implements ICategoryRepository{
         })
         return category;
     }
+
+    async findAllCategories(): Promise<Category[]> {
+        const categories = await prisma.category.findMany({
+            orderBy:{
+                createdAt: "desc"
+            }
+        })
+        return categories;
+    }
+
+    async updateCategory(id: string, data: { name?: string; description?: string; }): Promise<Category> {
+        const category = await prisma.category.update({
+            where: {id},
+            data
+        })
+        return category;
+    }
+
+    async countProductByCategoryId(categoryId: string): Promise<number> {
+        return await prisma.product.count({
+            where: {
+                categoryId
+            }
+        })
+    }
+
+    async deleteCategory(id: string): Promise<Category> {
+        const category = await prisma.category.delete({
+            where: {
+                id
+            }
+        })
+        return category;
+    }
 }

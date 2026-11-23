@@ -83,7 +83,7 @@ model Product {
   cartItems   CartItem[]
 
   user        User      @relation(fields: [userId], references: [id])
-  category    Category  @relation(fields: [categoryId], references: [id])
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
 }
 
 model Order {
