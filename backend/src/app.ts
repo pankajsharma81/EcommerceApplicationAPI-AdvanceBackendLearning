@@ -5,6 +5,7 @@ import { FRONTEND_URL } from "./config/env.config.js";
 import { globalErrorHandler } from "./middlewares/error.middleware.js";
 import authRoutes from "./modules/auth/auth.route.js";
 import categoryRoutes from "./modules/category/category.route.js";
+import productRoutes from "./modules/product/product.route.js";
 
 
 const app = express();
@@ -26,6 +27,7 @@ app.get("/health-check", (_req, res) => {
 
 app.use("/api/v1/auth", authRoutes)
 app.use("/api/v1/category", categoryRoutes)
+app.use("/api/v1/product", productRoutes)
 
 app.use(globalErrorHandler);
 

@@ -72,7 +72,7 @@ model Product {
   categoryId  String
   name        String
   description String?
-  imageUrl    String?
+  imageUrls   String[]
   price       Decimal   @db.Decimal(10, 2)
   stock       Int
   rating      Float     @default(0)

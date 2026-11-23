@@ -1,47 +1,37 @@
 import cloudinary from "../config/cloudinary.config.js";
-import { AppError } from "./app-error.js";
 
-export const uploadImgeToCloudinary = (
-  buffer: Buffer,
-  folder: "ecommerce/products",
-) => {
-  return new Promise<{ publicId: string; secureUrl: string }>(
-    (resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder,
-          resource_type: "image",
-        },
-
-        (error, result) => {
-          if (error || !result) {
-            reject(new AppError("Image upload failed", 500));
-            return;
-          }
-
-          resolve({
-            publicId: result.public_id,
-            secureUrl: result.secure_url,
-          });
-        },
-      );
-      uploadStream.end(buffer);
-    },
-  );
+export const uploadToCloudinary = async (fileBuffer: Buffer) => {
+  return new Promise<string>((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: "products",
+        resource_type: "image",
+      },
+      (error, result) => {
+        if (error) {
+          console.log("Cloudinary upload error: ", error);
+          return reject(error);
+        }
+        
+        if(!result?.secure_url){
+          return reject(new Error("cloudinary upload failed"))
+        }
+        resolve(result.secure_url);
+      },
+    );
+    stream.end(fileBuffer);
+  });
 };
 
-
-export const deleteImageFromCloudinary = async (publicId: string): Promise<void> => {
+export const deleteFromCloudinary = async (imageUrl: string) => {
   try {
-    const result = await cloudinary.uploader.destroy(publicId, {
-      resource_type: "image"
-    })
+    const parts = imageUrl.split("/");
+    const fileName = parts[parts.length - 1];
+    const publicId = `products/${fileName.split(".")[0]}`;
 
-    if (result.result !== "ok" && result.result !== "not found" ){
-      throw new Error("Image deletion failed");
-    }
+    return await cloudinary.uploader.destroy(publicId);
   } catch (error) {
-    throw new AppError("Image deletion failed", 500)
+    console.error("Cloudinary delete error: ", error);
+    throw error;
   }
-
-}
+};
