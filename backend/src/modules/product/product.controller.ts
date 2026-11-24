@@ -26,12 +26,44 @@ export const createProductController = catchAsync(
 
 export const getProductsByCategoryIdController = catchAsync(
   async(req: Request, res: Response) => {
-    const result = await productService.getProductByCategoryId(req.params.categoryId as string);
+    const result = await productService.getProductsByCategoryId(req.params.categoryId as string);
 
     sendResponse({
       res,
       statusCode: 200,
       message: "Products Fetched Successfully",
+      data: result
+    })
+  }
+)
+
+export const getAllProducts = catchAsync(
+  async(req: Request, res: Response) => {
+    const result = await productService.getAllProducts();
+
+    sendResponse({
+      res,
+      statusCode:200,
+      message: "Prodcuts Fetched Successfully",
+      data: result,
+    })
+  }
+)
+
+export const updateProducts = catchAsync(
+  async(req: Request, res: Response) => {
+
+    const productId = req.params.id as string;
+
+    const files = req.files as Express.Multer.File[] | undefined;
+    const images:Buffer[] = files?.map((file) => file.buffer) ?? []
+
+    const result = await productService.updateProduct(productId, req.body, req.user.id, images)
+
+    sendResponse({
+      res,
+      statusCode: 200,
+      message: "Product Updated Successfully",
       data: result
     })
   }
