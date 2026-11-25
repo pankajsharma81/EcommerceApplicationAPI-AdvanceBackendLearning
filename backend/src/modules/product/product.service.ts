@@ -79,22 +79,10 @@ export class ProductService {
   async updateProduct(productId: string, body: updateProductDto, userId: string, images: Buffer[]){
     const {name, description, price, stock, categoryId} = body;
 
-<<<<<<< HEAD
     const existingProduct = await this.productRepository.getProductByIdAndSellerId(productId, userId)
 
     if(!existingProduct){
       throw new AppError("Product not found or you are not allowed to update it", 404)
-=======
-    const existingProduct = await this.productRepository.findProductById(productId);
-
-    if(!existingProduct){
-      throw new AppError("Product not found", 404)
-    }
-
-    // Ensure seller can update only their own product
-    if(existingProduct.userId !== userId){
-      throw new AppError("You are not allowed to update the product", 403)
->>>>>>> 141123c9afbf7144a4f94bc5f7421dfb09992283
     }
 
     // check category only if categoryid is provided
@@ -129,7 +117,6 @@ export class ProductService {
     }
   }
 
-<<<<<<< HEAD
   async deleteProduct(productId: string, userId: string){
     const existingProduct = await this.productRepository.getProductByIdAndSellerId(productId, userId);
 
@@ -170,6 +157,4 @@ export class ProductService {
     }
   }
 
-=======
->>>>>>> 141123c9afbf7144a4f94bc5f7421dfb09992283
 }

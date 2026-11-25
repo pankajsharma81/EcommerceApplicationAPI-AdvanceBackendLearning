@@ -13,7 +13,6 @@ export interface IProductRepository {
   }): Promise<Product>;
 
   findProductByCategoryId(categoryId: string): Promise<Product[]>;
-<<<<<<< HEAD
 
   findAllProducts(): Promise<Product[]>;
 
@@ -37,21 +36,4 @@ export interface IProductRepository {
 
   findAllActiveProducts(): Promise<Product[]>
 
-=======
-
-  findAllProducts(): Promise<Product[]>;
-
-  findProductById(id: string): Promise<Product | null>;
-  updateProduct(
-    id: string,
-    data: {
-      categoryId?: string;
-      name?: string;
-      description?: string;
-      stock?: number;
-      price?: number;
-      imageUrls?: string[];
-    },
-  ): Promise<Product>;
->>>>>>> 141123c9afbf7144a4f94bc5f7421dfb09992283
 }

@@ -31,7 +31,6 @@ export class ProductRepository implements IProductRepository {
     const product = await prisma.product.findMany({
       where: {
         categoryId,
-<<<<<<< HEAD
       },
       orderBy: {
         createdAt: "desc",
@@ -118,51 +117,5 @@ export class ProductRepository implements IProductRepository {
       }
     })
     return products;
-=======
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-    return product;
->>>>>>> 141123c9afbf7144a4f94bc5f7421dfb09992283
-  }
-
-  async findAllProducts(): Promise<Product[]> {
-    const products = await prisma.product.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-    return products;
-  }
-
-  async findProductById(id: string): Promise<Product | null> {
-    const product = await prisma.product.findUnique({
-      where: {
-        id,
-      },
-    });
-    return product;
-  }
-
-  async updateProduct(
-    id: string,
-    data: {
-      categoryId?: string;
-      name?: string;
-      description?: string;
-      stock?: number;
-      price?: number;
-      imageUrls?: string[];
-    },
-  ): Promise<Product> {
-    const product = await prisma.product.update({
-      where: {
-        id,
-      },
-      data,
-    });
-    return product
   }
 }
