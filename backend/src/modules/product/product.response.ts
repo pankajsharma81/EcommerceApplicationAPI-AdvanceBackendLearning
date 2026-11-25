@@ -7,6 +7,7 @@ export interface ProductResponse {
   imageUrls: string[];
   price: number;
   stock: number;
+  isActive: boolean;
   rating: number;
   createdAt: Date;
   updatedAt: Date;

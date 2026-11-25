@@ -12,6 +12,7 @@ export const mapProductResponse = (product: Product): ProductResponse => {
     price: Number(product.price),
     stock: product.stock,
     rating: product.rating,
+    isActive: product.isActive,
     createdAt: product.createdAt,
     updatedAt: product.updatedAt,
   };

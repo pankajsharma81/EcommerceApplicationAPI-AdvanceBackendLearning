@@ -26,13 +26,88 @@ export const createProductController = catchAsync(
 
 export const getProductsByCategoryIdController = catchAsync(
   async(req: Request, res: Response) => {
-    const result = await productService.getProductByCategoryId(req.params.categoryId as string);
+    const result = await productService.getProductsByCategoryId(req.params.categoryId as string);
 
     sendResponse({
       res,
       statusCode: 200,
       message: "Products Fetched Successfully",
       data: result
+    })
+  }
+)
+
+export const getAllProducts = catchAsync(
+  async(req: Request, res: Response) => {
+    const result = await productService.getAllProducts();
+
+    sendResponse({
+      res,
+      statusCode:200,
+      message: "Products Fetched Successfully",
+      data: result,
+    })
+  }
+)
+
+export const updateProduct = catchAsync(
+  async(req: Request, res: Response) => {
+
+    const productId = req.params.id as string;
+
+    const files = req.files as Express.Multer.File[] | undefined;
+    const images:Buffer[] = files?.map((file) => file.buffer) ?? []
+
+    const result = await productService.updateProduct(productId, req.body, req.user.id, images)
+
+    sendResponse({
+      res,
+      statusCode: 200,
+      message: "Product Updated Successfully",
+      data: result
+    })
+  }
+)
+
+export const deleteProduct = catchAsync(
+  async (req: Request, res: Response) => {
+    const productId = req.params.id as string;
+
+    const result = await productService.deleteProduct(productId,req.user.id);
+
+    sendResponse({
+      res,
+      statusCode: 200,
+      message: "Product deleted Successfully",
+      data: result
+    })
+  }
+)
+
+export const toggleActiveProduct = catchAsync(
+  async(req: Request, res: Response) => {
+    const productId = req.params.id as string;
+
+    const result = await productService.toggleActiveProduct(productId, req.user.id);
+
+    sendResponse({
+      res,
+      statusCode: 200,
+      message: "Product Status updated Successfully",
+      data: result,
+    })
+  }
+)
+
+export const getAllActiveProducts = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await productService.getAllActiveProducts();
+
+    sendResponse({
+      res,
+      statusCode: 200,
+      message:"Active Products Fetched Successfully",
+      data: result,
     })
   }
 )
