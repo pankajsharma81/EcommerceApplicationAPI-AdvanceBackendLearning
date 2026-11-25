@@ -44,13 +44,21 @@ export const getAllProducts = catchAsync(
     sendResponse({
       res,
       statusCode:200,
+<<<<<<< HEAD
       message: "Products Fetched Successfully",
+=======
+      message: "Prodcuts Fetched Successfully",
+>>>>>>> 141123c9afbf7144a4f94bc5f7421dfb09992283
       data: result,
     })
   }
 )
 
+<<<<<<< HEAD
 export const updateProduct = catchAsync(
+=======
+export const updateProducts = catchAsync(
+>>>>>>> 141123c9afbf7144a4f94bc5f7421dfb09992283
   async(req: Request, res: Response) => {
 
     const productId = req.params.id as string;
@@ -68,6 +76,7 @@ export const updateProduct = catchAsync(
     })
   }
 )
+<<<<<<< HEAD
 
 export const deleteProduct = catchAsync(
   async (req: Request, res: Response) => {
@@ -111,3 +120,5 @@ export const getAllActiveProducts = catchAsync(
     })
   }
 )
+=======
+>>>>>>> 141123c9afbf7144a4f94bc5f7421dfb09992283
